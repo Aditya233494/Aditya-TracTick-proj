@@ -1,0 +1,685 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Expense Tracker</title>
+<style>
+    body {
+        font-family: 'Open Sans', 'Orienta', sans-serif;
+        margin: 0;
+        padding: 0;
+        background-color: #f0f0f0;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        min-height: 100vh;
+    }
+    .expense-tracker {
+        border-radius: 24px;
+        border: 7px solid #000;
+        background-color: rgba(217, 217, 217, 0.62);
+        display: flex;
+        max-width: 360px;
+        flex-direction: column;
+        overflow: hidden;
+        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    }
+    .header {
+        background: linear-gradient(0deg, rgba(0, 0, 0, 0.2), rgba(0, 0, 0, 0.2)), #2cfff2;
+        display: flex;
+        width: 100%;
+        flex-direction: column;
+        align-items: flex-end;
+        justify-content: center;
+        padding: 2px 60px;
+        box-sizing: border-box;
+    }
+    .header-image {
+        aspect-ratio: 4.17;
+        object-fit: contain;
+        object-position: center;
+        width: 153px;
+        z-index: 10;
+        max-width: 100%;
+    }
+    .nav-bar {
+        background: linear-gradient(0deg, rgba(0, 0, 0, 0.3), rgba(0, 0, 0, 0.3)), #2cfff2;
+        display: flex;
+        align-items: flex-start;
+        gap: 20px;
+        justify-content: space-between;
+        padding: 9px 3px;
+    }
+    .nav-content {
+        display: flex;
+        margin-top: 14px;
+        flex-direction: column;
+        color: #fff;
+        font-weight: 400;
+    }
+    .nav-title {
+        display: flex;
+        flex-direction: column;
+        padding: 0 20px;
+    }
+    .nav-heading {
+        font: 24px 'Orienta', sans-serif;
+        margin: 0;
+    }
+    .nav-options {
+        display: flex;
+        margin-top: 35px;
+        gap: 20px;
+        font-size: 16px;
+        white-space: nowrap;
+        justify-content: space-between;
+    }
+    .nav-option {
+        font-family: 'Orienta', sans-serif;
+        background: none;
+        border: none;
+        color: #fff;
+        cursor: pointer;
+        padding: 5px 10px;
+        transition: border-bottom 0.3s ease;
+    }
+    .nav-option.active {
+        border-bottom: 2px solid #fff;
+    }
+    .nav-divider {
+        border: 1px solid #fff;
+        background-color: #fff;
+        height: 1px;
+        margin-top: 10px;
+    }
+    .yearly-section {
+        display: flex;
+        flex-direction: column;
+        padding: 0 20px;
+    }
+    .yearly-icons {
+        display: flex;
+        gap: 6px;
+    }
+    .yearly-icon {
+        aspect-ratio: 1;
+        object-fit: contain;
+        object-position: center;
+        width: 34px;
+        margin: auto 0;
+    }
+    .yearly-sub-icons {
+        display: flex;
+        gap: 3px;
+    }
+    .yearly-sub-icon-1 {
+        aspect-ratio: 1;
+        object-fit: contain;
+        object-position: center;
+        width: 40px;
+        margin: auto 0;
+    }
+    .yearly-sub-icon-2 {
+        aspect-ratio: 0.59;
+        object-fit: contain;
+        object-position: center;
+        width: 29px;
+    }
+    .yearly-label {
+        color: #fff;
+        align-self: center;
+        margin-top: 23px;
+        font: 400 16px 'Orienta', sans-serif;
+        background: none;
+        border: none;
+        cursor: pointer;
+    }
+    .main-content {
+        display: flex;
+        margin-top: 19px;
+        width: 100%;
+        flex-direction: column;
+        align-items: center;
+        color: #000;
+        font-weight: 400;
+        padding: 0 12px;
+        box-sizing: border-box;
+    }
+    .date-section {
+        background: linear-gradient(0deg, rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.5)), #2cfff2;
+        align-self: stretch;
+        display: flex;
+        gap: 20px;
+        color: #fff;
+        justify-content: space-between;
+        padding: 14px 44px;
+    }
+    .date-info {
+        display: flex;
+        flex-direction: column;
+    }
+    .date-display {
+        display: flex;
+        gap: 13px;
+    }
+    .date-day {
+        font: 20px 'Open Sans Hebrew', sans-serif;
+    }
+    .date-full {
+        font: 18px 'Open Sans Hebrew', sans-serif;
+    }
+    .date-weekday {
+        margin-top: 15px;
+        font: 16px 'Open Sans Hebrew', sans-serif;
+    }
+    .savings-info {
+        align-self: flex-start;
+        display: flex;
+        flex-direction: column;
+        white-space: nowrap;
+    }
+    .savings-label {
+        font: 14px 'Open Sans Hebrew', sans-serif;
+    }
+    .savings-amount {
+        margin-top: 16px;
+        font: 18px 'Open Sans Hebrew', sans-serif;
+    }
+    .income-section,
+    .expense-section {
+        background: linear-gradient(0deg, rgba(0, 0, 0, 0.2), rgba(0, 0, 0, 0.2)), #d9d9d9;
+        display: flex;
+        margin-top: 16px;
+        width: 100%;
+        max-width: 314px;
+        gap: 20px;
+        padding: 15px 20px;
+        box-sizing: border-box;
+    }
+    .income-label,
+    .expense-label {
+        font: 14px 'Open Sans', sans-serif;
+    }
+    .income-amount,
+    .expense-amount {
+        flex-grow: 1;
+        flex-basis: auto;
+        font: 16px 'Open Sans Hebrew', sans-serif;
+        text-align: right;
+    }
+    .salary-section {
+        display: flex;
+        margin-top: 28px;
+        width: 100%;
+        max-width: 267px;
+        gap: 20px;
+        font-size: 16px;
+    }
+    .salary-info {
+        display: flex;
+        gap: 10px;
+        white-space: nowrap;
+        flex: 1;
+    }
+    .salary-icon {
+        aspect-ratio: 1;
+        object-fit: contain;
+        object-position: center;
+        width: 38px;
+    }
+    .salary-label,
+    .salary-amount {
+        font-family: 'Open Sans Hebrew', sans-serif;
+        margin: auto 0;
+    }
+    .salary-amount {
+        margin-left: auto;
+    }
+    .expense-details {
+        display: flex;
+        margin-top: 32px;
+        align-items: flex-start;
+        gap: 20px;
+        white-space: nowrap;
+        width: 100%;
+    }
+    .expense-categories {
+        display: flex;
+        flex-direction: column;
+        font-size: 14px;
+        flex: 1;
+    }
+    .expense-category {
+        display: flex;
+        gap: 10px;
+        margin-top: 16px;
+        align-items: center;
+    }
+    .expense-category:first-child {
+        margin-top: 0;
+    }
+    .category-icon {
+        aspect-ratio: 1.25;
+        object-fit: contain;
+        object-position: center;
+        width: 45px;
+    }
+    .category-label {
+        font-family: 'Open Sans Hebrew', sans-serif;
+        flex-grow: 1;
+        flex-basis: auto;
+    }
+    .expense-amounts {
+        display: flex;
+        flex-direction: column;
+        font-size: 16px;
+        flex: 1;
+    }
+    .amount {
+        font-family: 'Open Sans Hebrew', sans-serif;
+        margin-top: 43px;
+        text-align: right;
+    }
+    .amount:first-child {
+        margin-top: 0;
+    }
+    .add-expense {
+        background: linear-gradient(0deg, rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.5)), #2cfff2;
+        border-radius: 50%;
+        align-self: flex-end;
+        margin-top: 9px;
+        width: 66px;
+        height: 66px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: #fff;
+        font: 300 48px 'Open Sans Hebrew', -apple-system, Roboto, Helvetica, sans-serif;
+        border: none;
+        cursor: pointer;
+        transition: transform 0.3s ease;
+    }
+    .add-expense:hover {
+        transform: scale(1.1);
+    }
+    .footer {
+        background: linear-gradient(0deg, rgba(0, 0, 0, 0.2), rgba(0, 0, 0, 0.2)), #2cfff2;
+        display: flex;
+        margin-top: 15px;
+        width: 100%;
+        gap: 20px;
+        justify-content: space-between;
+        padding: 5px 57px;
+        box-sizing: border-box;
+    }
+    .footer-icons {
+        display: flex;
+        gap: 5px;
+        margin: auto 0;
+    }
+    .footer-icon {
+        border: 2px solid #fff;
+        background-color: #fff;
+        width: 2px;
+        height: 21px;
+    }
+    .footer-icon-group {
+        display: flex;
+        flex-direction: column;
+    }
+    .footer-icon-stacked {
+        border: 2px solid #fff;
+        background-color: #fff;
+        height: 21px;
+    }
+    .footer-icon-stacked:last-child {
+        z-index: 10;
+        margin-top: -21px;
+    }
+    .footer-actions {
+        display: flex;
+        gap: 20px;
+        justify-content: space-between;
+    }
+    .footer-button {
+        border-radius: 40px;
+        background: linear-gradient(0deg, rgba(0, 0, 0, 0.2), rgba(0, 0, 0, 0.2)), #2cfff2;
+        border: 3px solid #fff;
+        align-self: flex-start;
+        width: 28px;
+        height: 28px;
+        cursor: pointer;
+        transition: transform 0.3s ease;
+    }
+    .footer-button:hover {
+        transform: scale(1.1);
+    }
+    .footer-image {
+        aspect-ratio: 0.67;
+        object-fit: contain;
+        object-position: center;
+        width: 20px;
+    }
+    .modal {
+        display: none;
+        position: fixed;
+        z-index: 1000;
+        left: 0;
+        top: 0;
+        width: 100%;
+        height: 100%;
+        background-color: rgba(0, 0, 0, 0.5);
+    }
+    .modal-content {
+        background-color: #fefefe;
+        margin: 15% auto;
+        padding: 20px;
+        border: 1px solid #888;
+        width: 80%;
+        max-width: 500px;
+        border-radius: 10px;
+    }
+    .close {
+        color: #aaa;
+        float: right;
+        font-size: 28px;
+        font-weight: bold;
+        cursor: pointer;
+    }
+    .close:hover,
+    .close:focus {
+        color: #000;
+        text-decoration: none;
+        cursor: pointer;
+    }
+    .modal-form {
+        display: flex;
+        flex-direction: column;
+        gap: 15px;
+    }
+    .modal-form input,
+    .modal-form select {
+        padding: 10px;
+        border: 1px solid #ccc;
+        border-radius: 5px;
+        font-size: 16px;
+    }
+    .modal-form button {
+        background-color: #2cfff2;
+        color: white;
+        border: none;
+        padding: 10px 20px;
+        text-align: center;
+        text-decoration: none;
+        display: inline-block;
+        font-size: 16px;
+        margin: 4px 2px;
+        cursor: pointer;
+        border-radius: 5px;
+        transition: background-color 0.3s ease;
+    }
+    .modal-form button:hover {
+        background-color: #20d6d6;
+    }
+    #otherCategoryInput {
+        display: none;
+    }
+</style>
+</head>
+<body>
+<section class="expense-tracker">
+    <header class="header">
+        <img src="/My first design.jpeg" alt="Expense tracker header image" class="header-image" />
+    </header>
+    <nav class="nav-bar">
+        <div class="nav-content">
+            <div class="nav-title">
+                <h1 class="nav-heading">Daily Expense</h1>
+                <div class="nav-options">
+                    <button class="nav-option active" data-view="daily">Daily</button>
+                    <button class="nav-option" data-view="monthly">Monthly</button>
+                </div>
+            </div>
+            <div class="nav-divider"></div>
+        </div>
+        <div class="yearly-section">
+            <div class="yearly-icons">
+                <img src="http://b.io/ext_31-" alt="Yearly icon" class="yearly-icon" />
+                <div class="yearly-sub-icons">
+                    <img src="http://b.io/ext_32-" alt="Sub icon 1" class="yearly-sub-icon-1" />
+                    <img src="http://b.io/ext_33-" alt="Sub icon 2" class="yearly-sub-icon-2" />
+                </div>
+            </div>
+            <button class="yearly-label">Yearly</button>
+        </div>
+    </nav>
+    <main class="main-content">
+        <div class="date-section">
+            <div class="date-info">
+                <div class="date-display">
+                    <div class="date-day" id="currentDay"></div>
+                    <div class="date-full" id="currentDate"></div>
+                </div>
+                <div class="date-weekday" id="currentWeekday"></div>
+            </div>
+            <div class="savings-info">
+                <div class="savings-label">Savings</div>
+                <div class="savings-amount" id="savingsAmount">₹15,640.28</div>
+            </div>
+        </div>
+        <div class="income-section">
+            <div class="income-label">Total Income</div>
+            <div class="income-amount" id="totalIncome">₹12,000.00</div>
+        </div>
+        <div class="salary-section">
+            <div class="salary-info">
+                <img src="http://b.io/ext_34-" alt="Salary icon" class="salary-icon" />
+                <div class="salary-label">Salary</div>
+            </div>
+            <div class="salary-amount" id="salaryAmount">₹12,000.00</div>
+        </div>
+        <div class="expense-section">
+            <div class="expense-label">Total Expense</div>
+            <div class="expense-amount" id="totalExpense">₹9,000.00</div>
+        </div>
+        <div class="expense-details">
+            <div class="expense-categories" id="expenseCategories">
+                <div class="expense-category">
+                    <img src="http://b.io/ext_35-" alt="Shopping icon" class="category-icon" />
+                    <div class="category-label">Shopping</div>
+                </div>
+                <div class="expense-category">
+                    <img src="http://b.io/ext_36-" alt="Transportation icon" class="category-icon" />
+                    <div class="category-label">Transportation</div>
+                </div>
+                <div class="expense-category">
+                    <img src="http://b.io/ext_37-" alt="Entertainment icon" class="category-icon" />
+                    <div class="category-label">Entertainment</div>
+                </div>
+                <div class="expense-category">
+                    <img src="http://b.io/ext_38-" alt="Food icon" class="category-icon" />
+                    <div class="category-label">Food</div>
+                </div>
+            </div>
+            <div class="expense-amounts" id="expenseAmounts">
+                <div class="amount">₹1,500.00</div>
+                <div class="amount">₹1,500.00</div>
+                <div class="amount">₹4,000.00</div>
+                <div class="amount">₹2,000.00</div>
+            </div>
+        </div>
+        <button class="add-expense" id="addExpenseBtn">+</button>
+    </main>
+    <footer class="footer">
+        <div class="footer-icons">
+            <div class="footer-icon"></div>
+            <div class="footer-icon-group">
+                <div class="footer-icon-stacked"></div>
+                <div class="footer-icon-stacked"></div>
+            </div>
+            <div class="footer-icon"></div>
+        </div>
+        <div class="footer-actions">
+            <button class="footer-button"></button>
+            <img src="http://b.io/ext_39-" alt="Footer action" class="footer-image" />
+        </div>
+    </footer>
+</section>
+
+<div id="expenseModal" class="modal">
+    <div class="modal-content">
+        <span class="close">&times;</span>
+        <form id="expenseForm" class="modal-form">
+            <input type="text" id="expenseTitle" placeholder="Expense Title" required>
+            <input type="number" id="expenseAmount" placeholder="Amount" required>
+            <select id="expenseCategory" required>
+                <option value="">Select Category</option>
+                <option value="shopping">Shopping</option>
+                <option value="transportation">Transportation</option>
+                <option value="entertainment">Entertainment</option>
+                <option value="food">Food</option>
+                <option value="other">Other</option>
+            </select>
+            <input type="text" id="otherCategoryInput" placeholder="Specify Other Category" style="display: none;">
+            <button type="submit">Add Expense</button>
+        </form>
+    </div>
+</div>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const addExpenseBtn = document.getElementById('addExpenseBtn');
+        const modal = document.getElementById('expenseModal');
+        const closeBtn = modal.querySelector('.close');
+        const expenseForm = document.getElementById('expenseForm');
+        const expenseCategories = document.getElementById('expenseCategories');
+        const expenseAmounts = document.getElementById('expenseAmounts');
+        const totalExpenseElement = document.getElementById('totalExpense');
+        const totalIncomeElement = document.getElementById('totalIncome');
+        const savingsAmountElement = document.getElementById('savingsAmount');
+        const expenseCategorySelect = document.getElementById('expenseCategory');
+        const otherCategoryInput = document.getElementById('otherCategoryInput');
+
+        let expenses = [
+            { category: 'shopping', amount: 1500 },
+            { category: 'transportation', amount: 1500 },
+            { category: 'entertainment', amount: 4000 },
+            { category: 'food', amount: 2000 }
+        ];
+
+        function updateDate() {
+            const now = new Date();
+            document.getElementById('currentDay').textContent = now.getDate();
+            document.getElementById('currentDate').textContent = now.toLocaleString('default', { month: 'long' }) + ', ' + now.getFullYear();
+            document.getElementById('currentWeekday').textContent = now.toLocaleString('default', { weekday: 'long' });
+        }
+
+        function updateExpenseDisplay() {
+            expenseCategories.innerHTML = '';
+            expenseAmounts.innerHTML = '';
+            let totalExpense = 0;
+
+            expenses.forEach(expense => {
+                const categoryDiv = document.createElement('div');
+                categoryDiv.className = 'expense-category';
+                categoryDiv.innerHTML = `
+                    <img src="http://b.io/ext_${getCategoryIcon(expense.category)}-" alt="${expense.category} icon" class="category-icon" />
+                    <div class="category-label">${capitalizeFirstLetter(expense.category)}</div>
+                `;
+                expenseCategories.appendChild(categoryDiv);
+
+                const amountDiv = document.createElement('div');
+                amountDiv.className = 'amount';
+                amountDiv.textContent = `₹${expense.amount.toFixed(2)}`;
+                expenseAmounts.appendChild(amountDiv);
+
+                totalExpense += expense.amount;
+            });
+
+            totalExpenseElement.textContent = `₹${totalExpense.toFixed(2)}`;
+            updateSavings();
+        }
+
+        function updateSavings() {
+            const totalIncome = parseFloat(totalIncomeElement.textContent.replace('₹', ''));
+            const totalExpense = parseFloat(totalExpenseElement.textContent.replace('₹', ''));
+            const savings = totalIncome - totalExpense;
+            savingsAmountElement.textContent = `₹${savings.toFixed(2)}`;
+        }
+
+        function getCategoryIcon(category) {
+            const icons = {
+                shopping: '35',
+                transportation: '36',
+                entertainment: '37',
+                food: '38',
+                other: '40'
+            };
+            return icons[category] || '40';
+        }
+
+        function capitalizeFirstLetter(string) {
+            return string.charAt(0).toUpperCase() + string.slice(1);
+        }
+
+        addExpenseBtn.addEventListener('click', function() {
+            modal.style.display = 'block';
+        });
+
+        closeBtn.addEventListener('click', function() {
+            modal.style.display = 'none';
+        });
+
+        window.addEventListener('click', function(event) {
+            if (event.target === modal) {
+                modal.style.display = 'none';
+            }
+        });
+
+        expenseCategorySelect.addEventListener('change', function() {
+            if (this.value === 'other') {
+                otherCategoryInput.style.display = 'block';
+            } else {
+                otherCategoryInput.style.display = 'none';
+            }
+        });
+
+        expenseForm.addEventListener('submit', function(e) {
+            e.preventDefault();
+            const title = document.getElementById('expenseTitle').value;
+            const amount = parseFloat(document.getElementById('expenseAmount').value);
+            let category = expenseCategorySelect.value;
+
+            if (category === 'other') {
+                category = otherCategoryInput.value.toLowerCase();
+            }
+
+            expenses.push({ category, amount });
+            updateExpenseDisplay();
+
+            modal.style.display = 'none';
+            expenseForm.reset();
+            otherCategoryInput.style.display = 'none';
+        });
+
+        const navOptions = document.querySelectorAll('.nav-option');
+        navOptions.forEach(option => {
+            option.addEventListener('click', function() {
+                navOptions.forEach(opt => opt.classList.remove('active'));
+                this.classList.add('active');
+                console.log('View changed to:', this.dataset.view);
+            });
+        });
+
+        const yearlyBtn = document.querySelector('.yearly-label');
+        yearlyBtn.addEventListener('click', function() {
+            console.log('Yearly view selected');
+        });
+
+        updateDate();
+        updateExpenseDisplay();
+    });
+</script>
+</body>
+</html>
